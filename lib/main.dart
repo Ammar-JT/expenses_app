@@ -1,4 +1,4 @@
-// Lesson 2: Custom Class (not widget) + Mapping + Styling:
+// Lesson 2: Custom Class (not widget) + Mapping + Basic Styling:
 
 // - made a custom class named: Transaction.dart <<< go and see it
 // - applied a mapping into the list of transaction <<< search for: transactions.map((tx)
