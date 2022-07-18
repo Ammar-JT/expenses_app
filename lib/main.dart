@@ -1,18 +1,27 @@
-// Lesson 2: Custom Class (not widget) + Mapping + Basic Styling:
+// Lesson 3: String Interpolation + Installing external Packages + TextField (input) Widget + fetching (input) data
 
-// - made a custom class named: Transaction.dart <<< go and see it
-// - applied a mapping into the list of transaction <<< search for: transactions.map((tx)
-// - styling in Flutter:
-      //- you don't have a stylesheet or styling in the head like css
-      //.. instead, all the styling happend in the widget arguments (like inline in css)
+//- String Interpolation is combining string with dart variables:
+// instead of
+// 'first: ' + theVariable
+//.. you could use the string interpolation:
+// 'first: ${theVariable}'
 
-// - Styled the transactions cards:
-      //- used margin + decoration + padding
-      //- text styling
-      //- crossAxisAlignment
-      //- go and see it
+//- install external package:
+// we want a third-party lib for formatting date, so we used this one and install it by this line:
+// flutter pub add intl
+// and then import it
+
+//- TextField (input) widget, go and see it down there
+
+//- fetching data:
+// you ether make a global variable (naming might be wrong), and then store values to it when user type
+//.. so you can use this value to submit the form or anything
+// Or use the TextEdittingController()s
+
+// ignore_for_file: sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import './transaction.dart';
 
@@ -47,6 +56,11 @@ class MyHomePage extends StatelessWidget {
     ),
   ];
 
+  // String titleInput = '';
+  // String amountInput = '';
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,16 +69,49 @@ class MyHomePage extends StatelessWidget {
       ),
       // ignore: prefer_const_literals_to_create_immutables
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Card(
             child: Container(
               color: Colors.blue,
-              child: Text('Charts!'),
+              child: const Text('Charts!'),
               width: double.infinity,
             ),
             elevation: 5,
+          ),
+          Card(
+            elevation: 5,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Title'),
+                    // onChanged: (val) => titleInput = val,
+                    controller: titleController,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Amount'),
+                    // onChanged: (val) {
+                    //   amountInput = val;
+                    // },
+                    controller: amountController,
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      // print(titleInput);
+                      // print(amountInput);
+                      print(titleController.text);
+                      print(amountController.text);
+                    },
+                    child: Text('Add Transaction'),
+                    textColor: Colors.purple,
+                  )
+                ],
+              ),
+            ),
           ),
           Column(
             // children: [],
@@ -81,31 +128,31 @@ class MyHomePage extends StatelessWidget {
                         border: Border.all(
                           color: Colors.purple,
                           width: 2,
-
                         ),
                       ),
                       padding: EdgeInsets.all(10),
                       child: Text(
-                        tx.amount.toString(),
+                        // '\$' + tx.amount.toString(), <<< instead of this we used String Interpolation
+                        '\$${tx.amount}',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.purple
-                        ),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.purple),
                       ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          tx.title, 
+                          tx.title,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16
-                          ),
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                         Text(
-                          tx.date.toString(),
+                          // tx.date.toString(),
+                          // DateFormat('yyyy-MM-dd').format(tx.date),
+                          DateFormat.yMMMMd().format(tx.date),
+
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
