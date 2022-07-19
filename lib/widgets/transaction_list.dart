@@ -11,9 +11,9 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 300,
-      child: ListView(
-        // children: [],
-        children: transactions.map((tx) {
+      child: ListView.builder(
+        //instead of take the entire transactions list, here we build items as we need:
+        itemBuilder: (ctx, index) {
           return Card(
             child: Row(
               children: <Widget>[
@@ -31,7 +31,7 @@ class TransactionList extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   child: Text(
                     // '\$' + tx.amount.toString(), <<< instead of this we used String Interpolation
-                    '\$${tx.amount}',
+                    '\$${transactions[index].amount}',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -42,14 +42,14 @@ class TransactionList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      tx.title,
+                      transactions[index].title,
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(
                       // tx.date.toString(),
                       // DateFormat('yyyy-MM-dd').format(tx.date),
-                      DateFormat.yMMMMd().format(tx.date),
+                      DateFormat.yMMMMd().format(transactions[index].date),
 
                       style: TextStyle(color: Colors.grey),
                     ),
@@ -58,8 +58,8 @@ class TransactionList extends StatelessWidget {
               ],
             ),
           );
-          //why toList()? cuz the parent (Column) need from children to be a list []:
-        }).toList(),
+        },
+        itemCount: transactions.length,
       ),
     );
   }

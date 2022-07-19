@@ -1,4 +1,4 @@
-// Lesson 4: split app to widgets + managing data between them + make a list inside a column scrollable + ListView
+// Lesson 4: split app to widgets + managing data between them + make a list inside a column scrollable + ListView + ListView.builder (redner items as we need, not the entire list of items)
 
 // split app to widgets: at first we wanted to split 'the input section' and the 'transactionList' into two widgets and that's it!
   //.. but then we noticed that we have a changing UI which required a stateful parent widget
