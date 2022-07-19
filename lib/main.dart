@@ -1,4 +1,4 @@
-// Lesson 4: split app to widgets + managing data between them + make list scrollable
+// Lesson 4: split app to widgets + managing data between them + make a list inside a column scrollable + ListView
 
 // split app to widgets: at first we wanted to split 'the input section' and the 'transactionList' into two widgets and that's it!
   //.. but then we noticed that we have a changing UI which required a stateful parent widget
@@ -17,6 +17,16 @@
   //.. the solution simply is to use:
 // SingleChildScrollView 
   //.. and put the column inside it
+
+//ListView: you can replace any column wrapped in SingleChildScrollView , with a ListView directally
+  //.. cuz it will do the same thing (except that it needs to be wrapped in a container with a hight cuz the height of the listView is inifinite!) 
+//And yes, the same thing including the disadvantages!!!
+  //.. the main disadvantage is that you have to have the whole list (array or anything)
+// To avoid this disadvantage, you can use ListView.builder()!!!!
+  //.. the build will render only the item that shown in the screen with a little more
+  //.. Go and see it in transaction_list.dart!!!!
+
+
 
   
 
@@ -66,6 +76,7 @@ class MyHomePage extends StatelessWidget {
         title: Text('Flutter App'),
       ),
       // ignore: prefer_const_literals_to_create_immutables
+      //we can remove this SingleChildScrollView, but we kept it cuz we needed it for the keyboard scrolling margin
       body: SingleChildScrollView(
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +94,6 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-        
     );
   }
 }
