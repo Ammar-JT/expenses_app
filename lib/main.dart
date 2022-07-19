@@ -1,29 +1,38 @@
-// Lesson 3: String Interpolation + Installing external Packages + TextField (input) Widget + fetching (input) data
+// Lesson 4: split app to widgets + managing data between them + make list scrollable
 
-//- String Interpolation is combining string with dart variables:
-// instead of
-// 'first: ' + theVariable
-//.. you could use the string interpolation:
-// 'first: ${theVariable}'
+// split app to widgets: at first we wanted to split 'the input section' and the 'transactionList' into two widgets and that's it!
+  //.. but then we noticed that we have a changing UI which required a stateful parent widget
+  //.. we could make main.dart stateful, but بياخة, cuz we don't need to change the top bar and the other scaffold stuff!
+  //.. that's why needed a third widget (son of main) and (father of the rest) and this widget is stateful!!
+// widgets will be:
+  // main.dart <<< stateless
+    // user_transaction.dart <<< stateful
+      // new_transactoin.dart <<< stateless
+      // transaction_list.dart <<< stateless
 
-//- install external package:
-// we want a third-party lib for formatting date, so we used this one and install it by this line:
-// flutter pub add intl
-// and then import it
 
-//- TextField (input) widget, go and see it down there
+// managing data between widgets can be done by passing data through a constructors
 
-//- fetching data:
-// you ether make a global variable (naming might be wrong), and then store values to it when user type
-//.. so you can use this value to submit the form or anything
-// Or use the TextEdittingController()s
+// column can take full width in the screen, so if it's children overdflow the screen it won't handle it
+  //.. the solution simply is to use:
+// SingleChildScrollView 
+  //.. and put the column inside it
+
+  
+
+
+
+
 
 // ignore_for_file: sort_child_properties_last
+import './widgets/user_transactions.dart';
+
+import './widgets/new_transaction.dart';
+import './widgets/transaction_list.dart';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-import './transaction.dart';
+import 'models/transaction.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,18 +51,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   //a list of transaction:
   final List<Transaction> transactions = [
-    Transaction(
-      id: 't1',
-      title: 'New Shoes',
-      amount: 69.69,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Begala',
-      amount: 15.55,
-      date: DateTime.now(),
-    ),
+    
   ];
 
   // String titleInput = '';
@@ -68,103 +66,24 @@ class MyHomePage extends StatelessWidget {
         title: Text('Flutter App'),
       ),
       // ignore: prefer_const_literals_to_create_immutables
-      body: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Card(
-            child: Container(
-              color: Colors.blue,
-              child: const Text('Charts!'),
-              width: double.infinity,
-            ),
-            elevation: 5,
-          ),
-          Card(
-            elevation: 5,
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Title'),
-                    // onChanged: (val) => titleInput = val,
-                    controller: titleController,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(labelText: 'Amount'),
-                    // onChanged: (val) {
-                    //   amountInput = val;
-                    // },
-                    controller: amountController,
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      // print(titleInput);
-                      // print(amountInput);
-                      print(titleController.text);
-                      print(amountController.text);
-                    },
-                    child: Text('Add Transaction'),
-                    textColor: Colors.purple,
-                  )
-                ],
+      body: SingleChildScrollView(
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Card(
+              child: Container(
+                color: Colors.blue,
+                child: const Text('Charts!'),
+                width: double.infinity,
               ),
+              elevation: 5,
             ),
-          ),
-          Column(
-            // children: [],
-            children: transactions.map((tx) {
-              return Card(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 15,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.purple,
-                          width: 2,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        // '\$' + tx.amount.toString(), <<< instead of this we used String Interpolation
-                        '\$${tx.amount}',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.purple),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          tx.title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        Text(
-                          // tx.date.toString(),
-                          // DateFormat('yyyy-MM-dd').format(tx.date),
-                          DateFormat.yMMMMd().format(tx.date),
-
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-              //why toList()? cuz the parent (Column) need from children to be a list []:
-            }).toList(),
-          ),
-        ],
+            UserTransactions(),
+          ],
+        ),
       ),
+        
     );
   }
 }
