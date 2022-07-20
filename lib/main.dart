@@ -1,52 +1,28 @@
-// Lesson 4: split app to widgets + managing data between them + make a list inside a column scrollable + ListView + ListView.builder (redner items as we need, not the entire list of items)
+// Lesson 5: Styling input and output fields + AppBar buttons and floating action buttons + bottom modal
 
-// split app to widgets: at first we wanted to split 'the input section' and the 'transactionList' into two widgets and that's it!
-  //.. but then we noticed that we have a changing UI which required a stateful parent widget
-  //.. we could make main.dart stateful, but بياخة, cuz we don't need to change the top bar and the other scaffold stuff!
-  //.. that's why needed a third widget (son of main) and (father of the rest) and this widget is stateful!!
-// widgets will be:
-  // main.dart <<< stateless
-    // user_transaction.dart <<< stateful
-      // new_transactoin.dart <<< stateless
-      // transaction_list.dart <<< stateless
+// styling input fields and output
+  // '\$${transactions[index].amount.toStringAsFixed(2)}'
+  // keyboardType: TextInputType.number,
+  // onSubmitted: (_) => submitData,
 
+// AppBar buttons and floating action buttons:
+  // return Scaffold( appBar: AppBar(actions: <Widget>[IconButton()],))
+  // return Scaffold( floatingActionButton: FloatingActionButton(),)
 
-// managing data between widgets can be done by passing data through a constructors
-
-// column can take full width in the screen, so if it's children overdflow the screen it won't handle it
-  //.. the solution simply is to use:
-// SingleChildScrollView 
-  //.. and put the column inside it
-
-//ListView: you can replace any column wrapped in SingleChildScrollView , with a ListView directally
-  //.. cuz it will do the same thing (except that it needs to be wrapped in a container with a hight cuz the height of the listView is inifinite!) 
-//And yes, the same thing including the disadvantages!!!
-  //.. the main disadvantage is that you have to have the whole list (array or anything)
-// To avoid this disadvantage, you can use ListView.builder()!!!!
-  //.. the build will render only the item that shown in the screen with a little more
-  //.. Go and see it in transaction_list.dart!!!!
-
-
-
-  
-
-
-
+// bottom modal:
+  //ShowModalBottomSheet(context, builder(context){}) << to show the modal obviously
+  // context: is a context which never been explained before :/
+  // builder(context){} is a function that will return a widget inside the modal
 
 
 // ignore_for_file: sort_child_properties_last
-import './widgets/user_transactions.dart';
+import 'package:flutter/material.dart';
 
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
+import './models/transaction.dart';
 
-import 'package:flutter/material.dart';
-
-import 'models/transaction.dart';
-
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -58,41 +34,90 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  //a list of transaction:
-  final List<Transaction> transactions = [
-    
+class MyHomePage extends StatefulWidget {
+  // String titleInput;
+  // String amountInput;
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> _userTransactions = [
+    Transaction(
+      id: 't1',
+      title: 'New Shoes',
+      amount: 69.99,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Weekly Groceries',
+      amount: 16.53,
+      date: DateTime.now(),
+    ),
   ];
 
-  // String titleInput = '';
-  // String amountInput = '';
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transaction(
+      title: txTitle,
+      amount: txAmount,
+      date: DateTime.now(),
+      id: DateTime.now().toString(),
+    );
+
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void _startAddNewTransaction(BuildContext ctx) {
+    //as you can see here we passed the BuildContext from the widget and used it in the context of the modal
+    showModalBottomSheet(
+      context: ctx,
+      //the context of the builder is unused here, that's why we wrote it: _
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter App'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _startAddNewTransaction(context),
+          ),
+        ],
       ),
-      // ignore: prefer_const_literals_to_create_immutables
-      //we can remove this SingleChildScrollView, but we kept it cuz we needed it for the keyboard scrolling margin
       body: SingleChildScrollView(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Card(
-              child: Container(
+            Container(
+              width: double.infinity,
+              child: Card(
                 color: Colors.blue,
-                child: const Text('Charts!'),
-                width: double.infinity,
+                child: Text('CHART!'),
+                elevation: 5,
               ),
-              elevation: 5,
             ),
-            UserTransactions(),
+            TransactionList(_userTransactions),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _startAddNewTransaction(context),
       ),
     );
   }
