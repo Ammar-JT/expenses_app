@@ -1,6 +1,6 @@
-// Lesson 5: Styling input and output fields + AppBar buttons and floating action buttons + bottom modal
+// Lesson 5: Styling input and output fields + AppBar buttons and floating action buttons + bottom modal + themes + textTheme with exception
 
-// styling input fields and output
+// Styling input fields and output
   // '\$${transactions[index].amount.toStringAsFixed(2)}'
   // keyboardType: TextInputType.number,
   // onSubmitted: (_) => submitData,
@@ -9,10 +9,24 @@
   // return Scaffold( appBar: AppBar(actions: <Widget>[IconButton()],))
   // return Scaffold( floatingActionButton: FloatingActionButton(),)
 
-// bottom modal:
+// Bottom Modal:
   //ShowModalBottomSheet(context, builder(context){}) << to show the modal obviously
   // context: is a context which never been explained before :/
   // builder(context){} is a function that will return a widget inside the modal
+
+// Themes:
+  // simply just put it in MaterialApp in the main app:
+  // theme: ThemeData()
+
+// fonts:
+  // 1- download the font
+  // 2- put it in root/fonts or root/assets/fonts but not in the lib
+  // 3- import it in the pubspec.yaml
+  // 4- put it in the theme in main
+
+// textTheme with exception:
+  // ThemeData.light().textTheme.copyWith() <<< this to use the already-defined ThemeData and change only what inside .copyWith()
+
 
 
 // ignore_for_file: sort_child_properties_last
@@ -30,6 +44,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       home: MyHomePage(),
+      theme: ThemeData(
+          primarySwatch: Colors.purple,
+          accentColor: Colors.amber,
+          fontFamily: 'Quicksand',
+          textTheme: ThemeData.light().textTheme.copyWith(
+            //headline6 instead of title
+            headline6: TextStyle(
+              fontFamily: 'OpenSans',
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          appBarTheme: AppBarTheme(
+            textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+
     );
   }
 }
