@@ -1,35 +1,23 @@
-// Lesson 5: Styling input and output fields + AppBar buttons and floating action buttons + bottom modal + themes + textTheme with exception
+// Lesson 6: Adding IMages + logic for the chart (week transaction) +
 
-// Styling input fields and output
-  // '\$${transactions[index].amount.toStringAsFixed(2)}'
-  // keyboardType: TextInputType.number,
-  // onSubmitted: (_) => submitData,
+// Adding Images to the app:
+  // add the allowed directory in pubspec.yaml:
+  // assets/images/
+  // import it in any widget (in our case i put it in transactionList):
+  // Image.asset('path')
+  // we used BoxFit.cover in the image, so it will fit in the parrent, but if the parent is column it won't fit, so wrapped it in a container!
 
-// AppBar buttons and floating action buttons:
-  // return Scaffold( appBar: AppBar(actions: <Widget>[IconButton()],))
-  // return Scaffold( floatingActionButton: FloatingActionButton(),)
+// SizedBox() <<<< something like dev, we used it here to add a <br> with a specific height
 
-// Bottom Modal:
-  //ShowModalBottomSheet(context, builder(context){}) << to show the modal obviously
-  // context: is a context which never been explained before :/
-  // builder(context){} is a function that will return a widget inside the modal
+// Logic for the chart:
+  // added chart.dart
+  // wrote all the logic to get transaction number for today and the prev 6 days (so the week statistics of the transactions)
 
-// Themes:
-  // simply just put it in MaterialApp in the main app:
-  // theme: ThemeData()
-
-// fonts:
-  // 1- download the font
-  // 2- put it in root/fonts or root/assets/fonts but not in the lib
-  // 3- import it in the pubspec.yaml
-  // 4- put it in the theme in main
-
-// textTheme with exception:
-  // ThemeData.light().textTheme.copyWith() <<< this to use the already-defined ThemeData and change only what inside .copyWith()
-
+//
 
 
 // ignore_for_file: sort_child_properties_last
+import 'package:expenses_app/widgets/chart.dart';
 import 'package:flutter/material.dart';
 
 import './widgets/new_transaction.dart';
@@ -45,28 +33,27 @@ class MyApp extends StatelessWidget {
       title: 'Flutter App',
       home: MyHomePage(),
       theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.amber,
-          fontFamily: 'Quicksand',
-          textTheme: ThemeData.light().textTheme.copyWith(
-            //headline6 instead of title
-            headline6: TextStyle(
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          appBarTheme: AppBarTheme(
-            textTheme: ThemeData.light().textTheme.copyWith(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              //headline6 instead of title
               headline6: TextStyle(
                 fontFamily: 'OpenSans',
-                fontSize: 20,
                 fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
-          ),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
         ),
-
+      ),
     );
   }
 }
@@ -80,19 +67,29 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    Transaction(
-      id: 't1',
-      title: 'New Shoes',
-      amount: 69.99,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Weekly Groceries',
-      amount: 16.53,
-      date: DateTime.now(),
-    ),
+    // Transaction(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'Weekly Groceries',
+    //   amount: 16.53,
+    //   date: DateTime.now(),
+    // ),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList(); //<<< without this shit the return will for (.where) will be Iterable<Transaction> not List<Transaction
+  }
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -139,14 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue,
-                child: Text('CHART!'),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_userTransactions),
           ],
         ),
