@@ -1,4 +1,4 @@
-// Lesson 6: Adding IMages + logic for the chart (week transaction) +
+// Lesson 6: Adding IMages + logic for the chart (week transaction) + chart bar + ListTile
 
 // Adding Images to the app:
   // add the allowed directory in pubspec.yaml:
@@ -13,7 +13,14 @@
   // added chart.dart
   // wrote all the logic to get transaction number for today and the prev 6 days (so the week statistics of the transactions)
 
-//
+
+
+//logic for the chart bar:
+  // go look to at chart_bar widget
+
+//ListTile 
+  //used in transaction list widget:
+
 
 
 // ignore_for_file: sort_child_properties_last

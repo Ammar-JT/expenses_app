@@ -1,8 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import './chart_bar.dart';
 import '../models/transaction.dart';
 
 class Chart extends StatelessWidget {
@@ -35,9 +34,15 @@ class Chart extends StatelessWidget {
 
       //item in this list will be:
       return {
-        'day': DateFormat.E().format(weekDay),
+        'day': DateFormat.E().format(weekDay).substring(0, 1),
         'amount': totalSum,
       };
+    }).reversed.toList();
+  }
+
+  double get totalSpending {
+    return groupedTransactionValues.fold(0.0, (sum, item) {
+      return sum + (item['amount'] as double);
     });
   }
 
@@ -47,8 +52,24 @@ class Chart extends StatelessWidget {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
-      child: Row(
-        children: <Widget>[],
+      //Padding is just like container, but used if you want only the padding property
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTransactionValues.map((data) {
+            // return Text('${data['day']}: ${data['amount']}');
+            //Flexible used to force to a specific width: (like column in bootstrap)
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                data['day'].toString(),
+                data['amount'] as double,
+                totalSpending == 0.0 ? 0.0 : (data['amount'] as double) / totalSpending
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
